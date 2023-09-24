@@ -1,0 +1,9 @@
+.root {
+  height: 100%;
+}
+
+.settings {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 2rem;
+}

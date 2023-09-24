@@ -9,3 +9,33 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+select {
+  position: relative;
+  min-width: 200px;
+  padding: 10px 15px;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333;
+  font-size: 16px;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+select:hover {
+  border-color: #a4a4a4;
+}
+
+select:focus {
+  border-color: #888;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+select option:hover,
+select option:active {
+  background-color: #f0f0f0;
+}

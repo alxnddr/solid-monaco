@@ -1,6 +1,8 @@
 node_modules
 dist
 gitignore
+.idea
+.vscode
 
 # tsup
 tsup.config.bundled_*.{m,c,}s
