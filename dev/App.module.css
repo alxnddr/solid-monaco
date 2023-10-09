@@ -35,12 +35,10 @@
 }
 
 .navItem:hover {
-  background-color: #007BFF;
-  color: #FFFFFF;
+  background-color: #007bff;
+  color: #ffffff;
 }
 
 .navItemActive {
   background-color: #c8e3ff;
 }
-
-
