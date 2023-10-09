@@ -13,5 +13,34 @@
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid #dddde5;
 }
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.navItem {
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.navItem:hover {
+  background-color: #007BFF;
+  color: #FFFFFF;
+}
+
+.navItemActive {
+  background-color: #c8e3ff;
+}
+
+

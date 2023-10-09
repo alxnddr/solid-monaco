@@ -3,6 +3,7 @@ import { editor as monacoEditor } from 'monaco-editor'
 import loader, { Monaco } from '@monaco-editor/loader'
 import { Loader } from './Loader'
 import { MonacoContainer } from './MonacoContainer'
+import { getOrCreateModel } from './utils'
 
 const viewStates = new Map()
 
@@ -17,9 +18,10 @@ export interface MonacoEditorProps {
   width?: string
   height?: string
   options?: monacoEditor.IStandaloneEditorConstructionOptions
-  saveViewState?: string
+  saveViewState?: boolean
   onChange?: (value: string, event: monacoEditor.IModelContentChangedEvent) => void
   onMount?: (monaco: Monaco, editor: monacoEditor.IStandaloneCodeEditor) => void
+  onBeforeUnmount?: (monaco: Monaco, editor: monacoEditor.IStandaloneCodeEditor) => void
 }
 
 export const MonacoEditor = (inputProps: MonacoEditorProps) => {
@@ -29,7 +31,6 @@ export const MonacoEditor = (inputProps: MonacoEditorProps) => {
       width: '100%',
       height: '100%',
       loadingState: 'Loading…',
-      path: '',
       saveViewState: true,
     },
     inputProps,
@@ -77,6 +78,7 @@ export const MonacoEditor = (inputProps: MonacoEditorProps) => {
       return
     }
 
+    props.onBeforeUnmount?.(monaco()!, _editor)
     monacoOnChangeSubscription?.dispose()
     _editor.getModel()?.dispose()
     _editor.dispose()
@@ -159,7 +161,7 @@ export const MonacoEditor = (inputProps: MonacoEditorProps) => {
           return
         }
 
-        const model = getOrCreateModel(_monaco, path, props.value ?? '', props.language)
+        const model = getOrCreateModel(_monaco, props.value ?? '', props.language, path)
 
         if (model !== editor()?.getModel()) {
           if (props.saveViewState) {
@@ -175,19 +177,8 @@ export const MonacoEditor = (inputProps: MonacoEditorProps) => {
     ),
   )
 
-  const getOrCreateModel = (monaco: Monaco, path: string, value: string, language?: string) => {
-    const pathUri = monaco.Uri.parse(path)
-    const existingModel = monaco.editor.getModel(pathUri)
-
-    if (existingModel) {
-      return existingModel
-    }
-
-    return monaco.editor.createModel(value, language, monaco.Uri.parse(path))
-  }
-
   const createEditor = (monaco: Monaco) => {
-    const model = getOrCreateModel(monaco, props.path, props.value ?? '', props.language)
+    const model = getOrCreateModel(monaco, props.value ?? '', props.language, props.path)
 
     return monaco.editor.create(
       containerRef,

@@ -1,6 +1,6 @@
 {
   "name": "solid-monaco",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Monaco Editor for SolidJS",
   "license": "MIT",
   "author": "Aleksandr Lesnenko",
@@ -56,6 +56,7 @@
     "solid-js": "^1.6.0"
   },
   "devDependencies": {
+    "@solidjs/router": "^0.8.3",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
     "concurrently": "^8.2.0",
