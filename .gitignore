@@ -6,3 +6,4 @@ gitignore
 
 # tsup
 tsup.config.bundled_*.{m,c,}s
+.DS_Store
