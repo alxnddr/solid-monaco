@@ -14,9 +14,14 @@ Install it:
 
 ```bash
 npm i solid-monaco
-# or
+```
+*or*
+
+```bash
 yarn add solid-monaco
-# or
+```
+*or*
+```bash
 pnpm add solid-monaco
 ```
 
