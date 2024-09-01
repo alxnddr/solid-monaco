@@ -1,9 +1,10 @@
 import { createSignal, createEffect, onCleanup, JSX, onMount, mergeProps, on } from 'solid-js'
-import { editor as monacoEditor } from 'monaco-editor'
+import * as monacoEditor from 'monaco-editor'
 import loader, { Monaco } from '@monaco-editor/loader'
 import { Loader } from './Loader'
 import { MonacoContainer } from './MonacoContainer'
 import { getOrCreateModel } from './utils'
+import { LoaderParams } from './types'
 
 const viewStates = new Map()
 
@@ -12,16 +13,17 @@ export interface MonacoEditorProps {
   value?: string
   loadingState?: JSX.Element
   class?: string
-  theme?: monacoEditor.BuiltinTheme | string
+  theme?: monacoEditor.editor.BuiltinTheme | string
   path?: string
-  overrideServices?: monacoEditor.IEditorOverrideServices
+  overrideServices?: monacoEditor.editor.IEditorOverrideServices
   width?: string
   height?: string
-  options?: monacoEditor.IStandaloneEditorConstructionOptions
+  options?: monacoEditor.editor.IStandaloneEditorConstructionOptions
   saveViewState?: boolean
-  onChange?: (value: string, event: monacoEditor.IModelContentChangedEvent) => void
-  onMount?: (monaco: Monaco, editor: monacoEditor.IStandaloneCodeEditor) => void
-  onBeforeUnmount?: (monaco: Monaco, editor: monacoEditor.IStandaloneCodeEditor) => void
+  loaderParams?: LoaderParams
+  onChange?: (value: string, event: monacoEditor.editor.IModelContentChangedEvent) => void
+  onMount?: (monaco: Monaco, editor: monacoEditor.editor.IStandaloneCodeEditor) => void
+  onBeforeUnmount?: (monaco: Monaco, editor: monacoEditor.editor.IStandaloneCodeEditor) => void
 }
 
 export const MonacoEditor = (inputProps: MonacoEditorProps) => {
@@ -39,13 +41,14 @@ export const MonacoEditor = (inputProps: MonacoEditorProps) => {
   let containerRef: HTMLDivElement
 
   const [monaco, setMonaco] = createSignal<Monaco>()
-  const [editor, setEditor] = createSignal<monacoEditor.IStandaloneCodeEditor>()
+  const [editor, setEditor] = createSignal<monacoEditor.editor.IStandaloneCodeEditor>()
 
   let abortInitialization: (() => void) | undefined
   let monacoOnChangeSubscription: any
   let isOnChangeSuppressed = false
 
   onMount(async () => {
+    loader.config(inputProps.loaderParams ?? { monaco: monacoEditor })
     const loadMonaco = loader.init()
 
     abortInitialization = () => loadMonaco.cancel()
