@@ -3,6 +3,7 @@ dist
 gitignore
 .idea
 .vscode
+.pnpm-store
 
 # tsup
 tsup.config.bundled_*.{m,c,}s

@@ -7,25 +7,39 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
+    name: Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
-
+    
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+        
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - uses: pnpm/action-setup@v2.2.4
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 18
+          version: 8
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm run lint:types
+
+      - name: Lint
+        run: pnpm run lint:code
 
       - name: Build
         run: pnpm run build
@@ -35,5 +49,52 @@ jobs:
         env:
           CI: true
 
-      - name: Lint
-        run: pnpm run lint
+  build-check:
+    name: Build Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build library
+        run: pnpm run build
+
+      - name: Check build output
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ Build failed: dist directory not found"
+            exit 1
+          fi
+          if [ ! -f "dist/index.js" ]; then
+            echo "❌ Build failed: index.js not found"
+            exit 1
+          fi
+          if [ ! -f "dist/index.d.ts" ]; then
+            echo "❌ Build failed: index.d.ts not found"
+            exit 1
+          fi
+          echo "✅ Build output verified"
+
+      - name: Test package installation
+        run: |
+          # Create a test project to verify the package can be installed
+          mkdir test-install
+          cd test-install
+          npm init -y
+          npm install ../
+          echo "✅ Package installation test passed"
